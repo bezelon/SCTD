@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "node scripts/import-and-enrich.mjs",
+    "outreach": "node scripts/generate-outreach-csv.mjs"
   },
   "dependencies": {
     "next": "16.4.6",

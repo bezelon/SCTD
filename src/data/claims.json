@@ -1,0 +1,30 @@
+[
+  {
+    "id": "claim-201",
+    "createdAt": "2026-11-11T08:40:00Z",
+    "businessName": "CW Emergency Plumbers (Crewe)",
+    "contactName": "Dave Hockenhull",
+    "phone": "07731 445890",
+    "email": "dave@cw-emergency-plumbers-crewe.co.uk",
+    "townSlug": "crewe",
+    "categorySlug": "plumbers",
+    "selectedPlan": "featured",
+    "monthlyValueGbp": 29,
+    "status": "Pending Stripe Checkout (£29/mo)",
+    "notes": "Wants the 3rd & final Featured Top-3 slot for Crewe (CW1/CW2) Plumbers."
+  },
+  {
+    "id": "claim-202",
+    "createdAt": "2026-11-11T11:05:00Z",
+    "businessName": "South Cheshire Pressure Washing (Nantwich)",
+    "contactName": "Liam Buckley",
+    "phone": "07759 812034",
+    "email": "liam@scpressurewash.co.uk",
+    "townSlug": "nantwich",
+    "categorySlug": "driveway-cleaning",
+    "selectedPlan": "shopfront",
+    "monthlyValueGbp": 59,
+    "status": "Active Subscriber (£59/mo)",
+    "notes": "Only had a Facebook page previously — upgraded to Digital Shopfront + Lead Priority."
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "id": "lead-101",
+    "createdAt": "2026-11-11T09:15:00Z",
+    "homeownerName": " Rachel Davies",
+    "phone": "07841 923104",
+    "postcode": "CW2 8RS (Wistaston, Crewe)",
+    "townSlug": "crewe",
+    "categorySlug": "driveway-cleaning",
+    "urgency": "This Week",
+    "jobDescription": "3-car block paved driveway in Wistaston needs rotary jet washing, weed treatment and kiln-dried re-sanding before family visit.",
+    "estimatedValueGbp": 220,
+    "status": "Routed to Top 3 Pros",
+    "routedTo": [
+      "Crewe Jet Wash & Driveway Revival",
+      "Wistaston Exterior Cleaning & Paving"
+    ]
+  },
+  {
+    "id": "lead-102",
+    "createdAt": "2026-11-11T10:30:00Z",
+    "homeownerName": "Stephen & Gill Morris",
+    "phone": "07719 448210",
+    "postcode": "CW5 5JH (Welsh Row, Nantwich)",
+    "townSlug": "nantwich",
+    "categorySlug": "plumbers",
+    "urgency": "Emergency Today (24/7)",
+    "jobDescription": "Worcester Bosch combi boiler showing EA fault code and losing pressure. Need a Gas Safe engineer in Nantwich today.",
+    "estimatedValueGbp": 165,
+    "status": "Routed to Top 3 Pros",
+    "routedTo": [
+      "Willaston Heating & Plumbing Ltd",
+      "Nantwich Gas Safe Boilers & Plumbing"
+    ]
+  },
+  {
+    "id": "lead-103",
+    "createdAt": "2026-11-11T11:20:00Z",
+    "homeownerName": "Tom Bradshaw",
+    "phone": "07904 612889",
+    "postcode": "CW11 3AB (Elworth, Sandbach)",
+    "townSlug": "sandbach",
+    "categorySlug": "landscapers",
+    "urgency": "Flexible / Quote Needed",
+    "jobDescription": "5 feather-edge fence panels and 2 concrete posts blown down in Elworth. Looking for supply, fit and disposal of old panels.",
+    "estimatedValueGbp": 740,
+    "status": "New – Ready to Assign",
+    "routedTo": [
+      "Sandbach Fencing & Tree Surgery",
+      "Elworth Landscapes & Garden Makeovers"
+    ]
+  }
+]
