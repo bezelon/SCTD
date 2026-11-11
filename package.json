@@ -1,6 +1,6 @@
 {
-  "name": "south-cheshire-directory",
-  "version": "0.1.0",
+  "name": "sctd",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
