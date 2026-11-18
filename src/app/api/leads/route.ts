@@ -1,45 +1,22 @@
 import { NextResponse } from 'next/server';
-import fs from 'node:fs';
-import path from 'node:path';
-import initialLeads from '@/data/leads.json';
-import { getListingsByTownAndCategory } from '@/lib/listings';
+import { HomeownerLead, createLead, listLeads } from '@/lib/db';
+import { checkAdminAuthorized } from '@/lib/auth';
+import { getLiveListingsByTownAndCategory } from '@/lib/listings';
 
-export interface HomeownerLead {
-  id: string;
-  createdAt: string;
-  homeownerName: string;
-  phone: string;
-  postcode: string;
-  townSlug: string;
-  categorySlug: string;
-  urgency: string;
-  jobDescription: string;
-  estimatedValueGbp: number;
-  status: string;
-  routedTo: string[];
-}
+export type { HomeownerLead };
 
-const memoryLeads: HomeownerLead[] = [...(initialLeads as HomeownerLead[])];
-
-function loadLeads(): HomeownerLead[] {
-  try {
-    const filePath = path.join(process.cwd(), 'src/data/leads.json');
-    if (fs.existsSync(filePath)) {
-      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    }
-  } catch {
-    // Fallback to in-memory store on serverless edge
+export async function GET(request: Request) {
+  const auth = await checkAdminAuthorized(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Steward authentication required.' }, { status: 401 });
   }
-  return memoryLeads;
-}
-
-export async function GET() {
-  return NextResponse.json({ leads: loadLeads() });
+  const leads = await listLeads();
+  return NextResponse.json({ leads });
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as Record<string, unknown>;
     const {
       homeownerName,
       phone,
@@ -57,35 +34,30 @@ export async function POST(request: Request) {
       );
     }
 
-    const matchedPros = getListingsByTownAndCategory(townSlug, categorySlug)
+    const { listings } = await getLiveListingsByTownAndCategory(
+      String(townSlug),
+      String(categorySlug)
+    );
+    const matchedPros = listings
       .filter((l) => l.isFeatured || l.isVerifiedLocal)
       .slice(0, 3);
 
     const newLead: HomeownerLead = {
-      id: `lead-${Date.now().toString().slice(-5)}`,
+      id: `lead-${Date.now().toString().slice(-6)}`,
       createdAt: new Date().toISOString(),
       homeownerName: String(homeownerName).trim(),
       phone: String(phone).trim(),
       postcode: String(postcode).trim().toUpperCase(),
-      townSlug,
-      categorySlug,
-      urgency,
+      townSlug: String(townSlug),
+      categorySlug: String(categorySlug),
+      urgency: String(urgency),
       jobDescription: String(jobDescription).trim(),
-      estimatedValueGbp: urgency.includes('Emergency') ? 240 : 320,
-      status: 'Routed to Top 3 Pros',
+      estimatedValueGbp: String(urgency).includes('Emergency') ? 240 : 320,
+      status: 'Routed to Local Pros',
       routedTo: matchedPros.map((p) => p.name),
     };
 
-    memoryLeads.unshift(newLead);
-
-    try {
-      const filePath = path.join(process.cwd(), 'src/data/leads.json');
-      const existing = loadLeads();
-      const updated = [newLead, ...existing.filter((l) => l.id !== newLead.id)];
-      fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), 'utf8');
-    } catch {
-      // Ignore read-only filesystem on serverless deployment
-    }
+    await createLead(newLead);
 
     return NextResponse.json({
       success: true,

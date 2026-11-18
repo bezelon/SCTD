@@ -1,15 +1,17 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { REGION_CONFIG, getTownBySlug } from '@/config/region';
 import { CATEGORIES, getCategoryBySlug } from '@/config/categories';
-import {
-  getListingsByTownAndCategory,
-  getFeaturedSlotStatus,
-} from '@/lib/listings';
+import { getLiveListingsByTownAndCategory } from '@/lib/listings';
 import DirectoryExplorer from '@/components/DirectoryExplorer';
 import QuoteModal from '@/components/QuoteModal';
+import NominateModal from '@/components/NominateModal';
+import ShareButton from '@/components/ShareButton';
+
+export const dynamic = 'force-dynamic';
 
 interface TownCategoryPageProps {
   params: Promise<{ town: string; category: string }>;
@@ -37,8 +39,8 @@ export async function generateMetadata({
   if (!town || !category) return {};
 
   return {
-    title: `Best ${category.name} in ${town.name} (${town.postcodes.join('/')}) – Compare Local Quotes`,
-    description: `Compare verified local ${category.name.toLowerCase()} in ${town.name} (${town.postcodes.join(', ')}) and ${town.nearbyVillages.slice(0, 4).join(', ')}. Filter by 24/7 emergency callout, no call-out fee & free quotes.`,
+    title: `Local ${category.name} in ${town.name} (${town.postcodes.join('/')})`,
+    description: `Find neighbour-recommended ${category.name.toLowerCase()} in ${town.name} (${town.postcodes.join(', ')}) and ${town.nearbyVillages.slice(0, 4).join(', ')}. Direct phone & WhatsApp contact with zero middlemen.`,
   };
 }
 
@@ -53,8 +55,7 @@ export default async function TownCategoryPage({
     notFound();
   }
 
-  const listings = getListingsByTownAndCategory(town.slug, category.slug);
-  const scarcityStatus = getFeaturedSlotStatus(town.slug, category.slug);
+  const { listings } = await getLiveListingsByTownAndCategory(town.slug, category.slug);
 
   const populatedFaqs = category.faqTemplates.map((tpl) => ({
     question: tpl.questionTemplate
@@ -71,7 +72,7 @@ export default async function TownCategoryPage({
     {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: `Top ${category.name} in ${town.name} (${town.postcodes.join('/')})`,
+      name: `Local ${category.name} in ${town.name} (${town.postcodes.join('/')})`,
       numberOfItems: listings.length,
       itemListElement: listings.slice(0, 10).map((item, idx) => ({
         '@type': 'ListItem',
@@ -115,50 +116,72 @@ export default async function TownCategoryPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Hero Header */}
+      {/* Hero Header with Town Context Photo */}
       <section className="hero-section">
-        <div className="container">
-          <div className="hero-eyebrow">
-            <Link href="/" style={{ textDecoration: 'underline' }}>
-              South Cheshire
-            </Link>{' '}
-            /{' '}
-            <Link href={`/${town.slug}`} style={{ textDecoration: 'underline' }}>
-              {town.name} ({town.postcodes.join('/')})
-            </Link>{' '}
-            / {category.shortName}
+        <div className="container hero-grid">
+          <div>
+            <div className="hero-eyebrow">
+              <Link href="/" style={{ textDecoration: 'underline' }}>
+                CW1–CW11 Locals
+              </Link>{' '}
+              /{' '}
+              <Link href={`/${town.slug}`} style={{ textDecoration: 'underline' }}>
+                {town.name} ({town.postcodes.join('/')})
+              </Link>{' '}
+              / {category.shortName}
+            </div>
+
+            <h1 className="hero-title">
+              Local {category.name} in {town.name} ({town.postcodes.join(' & ')})
+            </h1>
+
+            <p className="hero-subtitle">
+              {listings.length} independent local {category.name.toLowerCase()} serving{' '}
+              <strong>{town.name}</strong> and surrounding villages ({town.nearbyVillages.join(', ')}).
+              Direct contact with real people in our community — zero lead-broker fees.
+            </p>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
+              <QuoteModal
+                defaultTownSlug={town.slug}
+                defaultCategorySlug={category.slug}
+                buttonLabel={`Ask 3 ${town.name} ${category.shortName}`}
+                buttonClassName="btn btn-primary btn-lg"
+                triggerId="category-hero-quote-btn"
+              />
+              <NominateModal
+                defaultTownSlug={town.slug}
+                defaultCategorySlug={category.slug}
+                buttonLabel={`+ Add a ${town.name} ${category.singularName}`}
+                buttonClassName="btn btn-outline btn-lg"
+                triggerId="category-hero-nominate-btn"
+              />
+              <ShareButton
+                path={`/${town.slug}/${category.slug}`}
+                label={`${category.shortName} in ${town.name}`}
+                townName={town.name}
+              />
+            </div>
           </div>
 
-          <h1 className="hero-title">
-            Verified {category.name} in {town.name} ({town.postcodes.join(' & ')})
-          </h1>
-
-          <p className="hero-subtitle">
-            Compare {listings.length} vetted local {category.name.toLowerCase()} serving{' '}
-            <strong>{town.name}</strong> and surrounding villages ({town.nearbyVillages.join(', ')}).
-            Typical local job range: <strong>{category.avgJobValueGbp}</strong>.
-          </p>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-            <QuoteModal
-              defaultTownSlug={town.slug}
-              defaultCategorySlug={category.slug}
-              buttonLabel={`Get 3 Free ${category.shortName} Quotes in ${town.name}`}
-              buttonClassName="btn btn-primary btn-lg"
-              triggerId="category-hero-quote-btn"
+          <div className="hero-photo-frame">
+            <Image
+              src={town.imageUrl}
+              alt={town.imageAlt}
+              width={800}
+              height={520}
+              className="hero-photo-img"
+              priority
             />
-            <Link
-              href={`/for-businesses?plan=featured&town=${town.slug}&category=${category.slug}#claim-form`}
-              className="btn btn-ghost-dark btn-lg"
-              id="category-hero-claim-btn"
-            >
-              Are You a {town.name} {category.singularName}? Claim Top-3 Spot (£29/mo)
-            </Link>
+            <div className="hero-photo-caption">
+              <span>📍 {town.imageCaption}</span>
+              <span>{category.shortName}</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Main Directory Explorer with Category-Specific Filter Gap */}
+      {/* Main Directory Explorer */}
       <section className="section">
         <div className="container">
           <DirectoryExplorer
@@ -166,12 +189,11 @@ export default async function TownCategoryPage({
             lockedTownSlug={town.slug}
             lockedCategorySlug={category.slug}
             availableFilters={category.filterTags}
-            scarcityStatus={scarcityStatus}
           />
         </div>
       </section>
 
-      {/* Local Pricing Guide, Common Services & FAQ (Programmatic SEO Booster) */}
+      {/* Local Guidance, Common Services & FAQ */}
       <section className="section section-alt">
         <div className="container">
           <div
@@ -183,10 +205,10 @@ export default async function TownCategoryPage({
           >
             <div>
               <h2 className="section-title" style={{ fontSize: '1.45rem', marginBottom: '0.85rem' }}>
-                Popular {category.shortName} Services in {town.name} ({town.postcodes[0]})
+                Common {category.shortName} Jobs in {town.name} ({town.postcodes[0]})
               </h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1rem' }}>
-                Homeowners and landlords across {town.name}, {town.nearbyVillages.slice(0, 4).join(', ')} most frequently book our listed specialists for:
+                Neighbours across {town.name}, {town.nearbyVillages.slice(0, 4).join(', ')} most often ask local specialists for:
               </p>
               <ul
                 style={{
@@ -208,7 +230,7 @@ export default async function TownCategoryPage({
                       fontSize: '0.9rem',
                     }}
                   >
-                    ✓ {srv} ({town.name} & {town.postcodes.join('/')})
+                    ✓ {srv} ({town.name} &amp; {town.postcodes.join('/')})
                   </li>
                 ))}
               </ul>
@@ -216,7 +238,7 @@ export default async function TownCategoryPage({
 
             <div>
               <h2 className="section-title" style={{ fontSize: '1.45rem', marginBottom: '0.85rem' }}>
-                {town.name} {category.shortName} – Local FAQs & Pricing Guide
+                {town.name} {category.shortName} – Neighbour Q&amp;A
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
                 {populatedFaqs.map((faq) => (
@@ -241,7 +263,7 @@ export default async function TownCategoryPage({
             </div>
           </div>
 
-          {/* Cross-Links to Neighbouring Towns & Categories */}
+          {/* Cross-Links to Neighbouring Towns */}
           <div
             style={{
               marginTop: '2.5rem',
@@ -254,7 +276,7 @@ export default async function TownCategoryPage({
             }}
           >
             <strong style={{ fontSize: '0.85rem', marginRight: '0.35rem' }}>
-              Compare {category.shortName} in nearby South Cheshire towns:
+              Also check {category.shortName} in nearby CW towns:
             </strong>
             {REGION_CONFIG.towns
               .filter((t) => t.slug !== town.slug)

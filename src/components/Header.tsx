@@ -2,29 +2,29 @@ import React from 'react';
 import Link from 'next/link';
 import { REGION_CONFIG } from '@/config/region';
 import QuoteModal from '@/components/QuoteModal';
+import NominateModal from '@/components/NominateModal';
 
 export default function Header() {
   return (
     <>
       <div className="top-notice-bar">
         <div className="container top-notice-inner">
-          <div>
-            <strong>{REGION_CONFIG.regionName} Local Directory:</strong> Covering{' '}
-            {REGION_CONFIG.towns.map((t) => `${t.name} (${t.postcodes.join('/')})`).join(' • ')}
+          <div style={{ display: 'flex', alignItems: 'center', fontWeight: 600 }}>
+            <span className="pledge-dot" aria-hidden="true" />
+            <span>
+              <strong>CW1–CW11 Community Black Book:</strong>{' '}
+              {REGION_CONFIG.towns
+                .map((t) => `${t.name} (${t.postcodes.join('/')})`)
+                .join(' • ')}{' '}
+              — Independent &amp; Neighbour-Backed
+            </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link
-              href="/for-businesses"
-              style={{ color: 'hsl(154, 65%, 74%)', fontWeight: 700 }}
-            >
-              Tradesperson in CW1–CW11? Claim or Upgrade to Top 3 (£29/mo) →
-            </Link>
-            <Link
-              href="/admin"
-              style={{ color: 'var(--text-on-dark-muted)', fontSize: '0.78rem' }}
-            >
-              Owner Hub
-            </Link>
+          <div>
+            <NominateModal
+              buttonLabel="Know a reliable local mate or trade? Nominate them (£0) →"
+              buttonClassName="nav-link"
+              triggerId="topbar-nominate-btn"
+            />
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@ export default function Header() {
             <div>
               <span className="brand-title">{REGION_CONFIG.brandName}</span>
               <span className="brand-sub">
-                Crewe • Nantwich • Sandbach Verified Pros
+                CW1–CW11 • Crewe, Nantwich &amp; Sandbach
               </span>
             </div>
           </Link>
@@ -52,21 +52,19 @@ export default function Header() {
                 {town.name} ({town.postcodes[0]})
               </Link>
             ))}
-            <Link href="/for-businesses" className="nav-link" id="nav-for-businesses">
-              For Local Trades
+            <Link href="/#why-back-local" className="nav-link" id="nav-why-local">
+              Back Our Own
             </Link>
           </nav>
 
           <div className="header-actions">
-            <Link
-              href="/for-businesses#claim-form"
-              className="btn btn-outline btn-sm"
-              id="header-claim-listing-btn"
-            >
-              Add / Claim Business
-            </Link>
+            <NominateModal
+              buttonLabel="+ Nominate a Local Trade"
+              buttonClassName="btn btn-outline btn-sm"
+              triggerId="header-nominate-btn"
+            />
             <QuoteModal
-              buttonLabel="Get 3 Free Quotes"
+              buttonLabel="Ask 3 Neighbour Pros"
               buttonClassName="btn btn-primary btn-sm"
               triggerId="header-get-quotes-btn"
             />

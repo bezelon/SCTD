@@ -6,9 +6,9 @@ import { getFeaturedSlotStatus } from '@/lib/listings';
 import BusinessClaimPortal from '@/components/BusinessClaimPortal';
 
 export const metadata: Metadata = {
-  title: 'For Local Tradespeople in Crewe, Nantwich & Sandbach | Claim Top 3 Spot (£29/mo)',
+  title: 'For Local Tradespeople in Crewe, Nantwich & Sandbach | South Cheshire Locals',
   description:
-    'Claim your free trade business profile or lock in a Top 3 Featured Pro spot in Crewe (CW1/CW2), Nantwich (CW5) or Sandbach (CW11). 0% commission on jobs.',
+    'Claim your free local CW trade listing or support our community-run South Cheshire directory. 0% commission on local jobs across CW1–CW11.',
 };
 
 export default function ForBusinessesPage() {
@@ -17,23 +17,23 @@ export default function ForBusinessesPage() {
       <section className="hero-section">
         <div className="container">
           <div className="hero-eyebrow">
-            For Local Tradespeople in Crewe (CW1/CW2), Nantwich (CW5) & Sandbach (CW11)
+            For Independent Local Trades in Crewe (CW1/CW2), Nantwich (CW5) &amp; Sandbach (CW11)
           </div>
           <h1 className="hero-title">
-            Be First When Homeowners in South Cheshire Need a Trusted Trade
+            Keep Your Trade Booked by Neighbours Down the Road — Not National Call Centres
           </h1>
           <p className="hero-subtitle">
-            Stop paying £30+ per shared lead on national lead-buying websites. Pin your business in the{' '}
-            <strong>Top 3 Featured Box</strong> for your town at a flat £29/month — or let us host your complete{' '}
-            <strong>Digital Shopfront</strong> if you currently only use Facebook.
+            National lead websites charge £30+ every time they sell the same homeowner enquiry to five firms. Claim your{' '}
+            <strong>free CW community listing</strong> or become a{' '}
+            <strong>Local Community Supporter (£29/mo)</strong> to keep the directory free for neighbours — always with 0% commission.
           </p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
             <a href="#claim-form" className="btn btn-primary btn-lg">
-              Claim or Upgrade Your Listing (60 Secs) →
+              Claim or Update Your Local Listing (60 Secs) →
             </a>
-            <a href="#scarcity-matrix" className="btn btn-ghost-dark btn-lg">
-              Check Open Top-3 Slots by Town ↓
+            <a href="#scarcity-matrix" className="btn btn-outline btn-lg">
+              View Local Supporter Slots by Town ↓
             </a>
           </div>
         </div>

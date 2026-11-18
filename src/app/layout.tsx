@@ -3,7 +3,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { REGION_CONFIG } from '@/config/region';
+import { REGION_CONFIG, getSiteBaseUrl } from '@/config/region';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -12,19 +12,20 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteBaseUrl()),
   title: {
-    default: `${REGION_CONFIG.brandName} | Verified Local Tradespeople in Crewe, Nantwich & Sandbach`,
+    default: `${REGION_CONFIG.brandName} | Back Our Own Trades in Crewe, Nantwich & Sandbach (CW1–CW11)`,
     template: `%s | ${REGION_CONFIG.brandName}`,
   },
   description: REGION_CONFIG.heroSubtitle,
   keywords: [
-    'Crewe tradespeople',
+    'Crewe local tradespeople',
     'Nantwich plumbers',
     'Sandbach electricians',
-    'South Cheshire directory',
-    'CW1 CW2 CW5 CW11 local trades',
-    'driveway cleaning Crewe',
-    'roofers Nantwich',
+    'South Cheshire Locals',
+    'CW1 CW2 CW5 CW11 trades',
+    'Crewe community recommended trades',
+    'back local South Cheshire',
   ],
 };
 

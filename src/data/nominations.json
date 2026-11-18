@@ -1,0 +1,26 @@
+[
+  {
+    "id": "nom-1001",
+    "createdAt": "2026-11-12T10:15:00.000Z",
+    "tradeName": "Cheshire Brick & Chimney Repairs (Mick Turner)",
+    "townSlug": "crewe",
+    "categorySlug": "roofers",
+    "phoneOrFacebook": "07742 319840",
+    "nominatedBy": "Claire B. (Wistaston, CW2)",
+    "relationshipNote": "Neighbour & family friend",
+    "reason": "Fixed our ridge tiles after the storm for a fair local price, turned up when he promised and tidied everything up.",
+    "status": "Pending Community Review"
+  },
+  {
+    "id": "nom-1002",
+    "createdAt": "2026-11-13T16:40:00.000Z",
+    "tradeName": "Nantwich Handyman & Joinery (Pete & Son)",
+    "townSlug": "nantwich",
+    "categorySlug": "handyman",
+    "phoneOrFacebook": "facebook.com/NantwichHandymanPete",
+    "nominatedBy": "Graham H. (Willaston, CW5)",
+    "relationshipNote": "Used twice for doors & fencing",
+    "reason": "Father and son team from Willaston — no website, just honest word-of-mouth work.",
+    "status": "Pending Community Review"
+  }
+]

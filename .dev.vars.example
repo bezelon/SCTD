@@ -1,0 +1,6 @@
+# Copy to .dev.vars for local Cloudflare Workers preview (wrangler / opennextjs-cloudflare preview)
+# NEVER commit .dev.vars to git!
+
+ADMIN_PASSWORD=change-this-local-steward-password
+NEXT_PUBLIC_SITE_URL=http://localhost:8787
+NEXT_PUBLIC_DEMO_MODE=true

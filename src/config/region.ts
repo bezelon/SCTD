@@ -7,6 +7,10 @@ export interface TownConfig {
   nearbyVillages: string[];
   tagline: string;
   seoDescription: string;
+  imageUrl: string;
+  imageAlt: string;
+  imageCaption: string;
+  imageCredit?: string;
   coordinates: {
     lat: number;
     lng: number;
@@ -35,12 +39,16 @@ export interface RegionConfig {
   countyName: string;
   heroTitle: string;
   heroSubtitle: string;
+  heroImage: string;
+  heroImageAlt: string;
+  heroImageCaption: string;
+  heroImageCredit: string;
   primaryPhonePrefix: string;
-   postcodePrefix: string;
+  postcodePrefix: string;
   supportEmail: string;
   monetization: {
-    enableFeaturedListings: boolean; // Phase 1: Featured TOP 3 Pro
-    enableLeadGenQuotes: boolean;    // Phase 2: Get 3 Free Local Quotes
+    enableFeaturedListings: boolean;
+    enableLeadGenQuotes: boolean;
     maxFeaturedPerCategoryTown: number;
     averageTradeJobValueGbp: number;
   };
@@ -48,21 +56,19 @@ export interface RegionConfig {
   pricingTiers: PricingTier[];
 }
 
-/**
- * COPY & PASTE MULTI-CITY CONFIGURATION
- * To launch this directory in another UK cluster (e.g. Chester & Ellesmere Port,
- * Warrington, or Macclesfield & Wilmslow), simply duplicate this file or update
- * the towns array and brand strings below, then run `npm run seed`.
- */
 export const REGION_CONFIG: RegionConfig = {
-  brandName: 'South Cheshire Trades',
-  brandShortName: 'SC Trades',
+  brandName: 'South Cheshire Locals',
+  brandShortName: 'CW Locals',
   domain: 'southcheshiretrades.co.uk',
   regionName: 'South Cheshire',
   countyName: 'Cheshire East',
-  heroTitle: 'Find Verified Local Tradespeople in Crewe, Nantwich & Sandbach',
+  heroTitle: 'Keep Your Pounds in CW1–CW11. Back Our Own Local Trades.',
   heroSubtitle:
-    'Skip endless Facebook group threads. Filter vetted local pros by 24/7 emergency callout, free quotes, Gas Safe / NICEIC registration, and real local reviews across CW1–CW11.',
+    'No Google algorithms, no AI guesswork, and no faceless national call centres taking a cut. Just neighbours across Crewe, Nantwich & Sandbach sharing the honest independent tradespeople we trust with our own front doors.',
+  heroImage: '/images/towns/south-cheshire-hero.jpg',
+  heroImageAlt: 'Shropshire Union Canal and historic brick wharf at Audlem, South Cheshire',
+  heroImageCaption: 'Shropshire Union Canal & Wharf, South Cheshire (CW)',
+  heroImageCredit: 'Jo Turner (CC BY-SA 2.0)',
   primaryPhonePrefix: '01270',
   postcodePrefix: 'CW',
   supportEmail: 'hello@southcheshiretrades.co.uk',
@@ -88,9 +94,13 @@ export const REGION_CONFIG: RegionConfig = {
         'Weston',
         'Hough',
       ],
-      tagline: 'Fast-response tradespeople serving CW1, CW2 & surrounding villages',
+      tagline: 'Independent local trades living and working across CW1, CW2 & nearby villages',
       seoDescription:
-        'Compare trusted local tradespeople in Crewe (CW1 & CW2), including Wistaston, Shavington, Haslington and Leighton. Filter by 24/7 emergency callouts, no call-out fee and free local quotes.',
+        'Find neighbour-vouched tradespeople in Crewe (CW1 & CW2), Wistaston, Shavington, Haslington and Leighton. Direct 01270 & mobile numbers with zero corporate middlemen.',
+      imageUrl: '/images/towns/crewe.jpg',
+      imageAlt: 'Queen’s Park pavilion and gardens in Crewe, CW1/CW2',
+      imageCaption: 'Queen’s Park, Crewe (CW1 / CW2)',
+      imageCredit: 'FREON101 (CC BY-SA 3.0)',
       coordinates: { lat: 53.0988, lng: -2.4405 },
       localLandmarks: ['Queens Park', 'Grand Junction Retail Park', 'Crewe Station', 'Leighton Hospital area'],
     },
@@ -109,9 +119,13 @@ export const REGION_CONFIG: RegionConfig = {
         'Audlem',
         'Wybunbury',
       ],
-      tagline: 'Heritage-trusted & domestic specialists across Nantwich & CW5 rural areas',
+      tagline: 'Trusted family trades & heritage home specialists across Nantwich & CW5 villages',
       seoDescription:
-        'Find vetted home improvement specialists and emergency trades in Nantwich (CW5), Willaston, Stapeley, Audlem and Wrenbury. Direct phone & WhatsApp contact with zero middleman markup.',
+        'Browse neighbour-recommended home trades across Nantwich (CW5), Willaston, Stapeley, Audlem and Wrenbury. Direct contact with local families, never national lead brokers.',
+      imageUrl: '/images/towns/nantwich.jpg',
+      imageAlt: 'Historic black-and-white Tudor timber building on Welsh Row looking toward St Mary’s Church in Nantwich, CW5',
+      imageCaption: 'Welsh Row & St Mary’s, Nantwich (CW5)',
+      imageCredit: 'Jonathanawhite (Public Domain)',
       coordinates: { lat: 53.0672, lng: -2.5219 },
       localLandmarks: ['Nantwich Town Square', 'Barony Park', 'Stapeley Water Gardens estate', 'Welsh Row'],
     },
@@ -130,9 +144,13 @@ export const REGION_CONFIG: RegionConfig = {
         'Arclid',
         'Malkins Bank',
       ],
-      tagline: 'Reliable local trades covering Sandbach, Elworth, Wheelock & CW11',
+      tagline: 'Dependable CW11 locals serving Sandbach, Elworth, Wheelock & surrounding lanes',
       seoDescription:
-        'Browse top-rated local tradespeople in Sandbach (CW11), Elworth, Wheelock and Winterley. Check verified qualifications, transparent call-out policies and request free quotes.',
+        'Connect directly with neighbour-backed tradespeople in Sandbach (CW11), Elworth, Wheelock and Winterley. Real local qualifications, fair upfront pricing and zero middleman fees.',
+      imageUrl: '/images/towns/sandbach.jpg',
+      imageAlt: 'Sandbach Cobbles, historic half-timbered inns and Anglo-Saxon Crosses in Market Square, CW11',
+      imageCaption: 'The Cobbles & Market Square, Sandbach (CW11)',
+      imageCredit: 'fotodiscs4u (CC BY-SA 2.0)',
       coordinates: { lat: 53.1456, lng: -2.3627 },
       localLandmarks: ['Sandbach Cobbles', 'Elworth', 'Wheelock Rail Trail', 'J17 M6 Corridor'],
     },
@@ -140,53 +158,53 @@ export const REGION_CONFIG: RegionConfig = {
   pricingTiers: [
     {
       id: 'basic',
-      name: 'Basic Local Listing',
+      name: 'Community Neighbour Listing',
       priceMonthlyGbp: 0,
-      badgeText: 'Standard Unclaimed Profile',
-      description: 'Essential directory presence for local trades operating in Crewe, Nantwich or Sandbach.',
+      badgeText: 'Always Free for CW Locals',
+      description: 'Essential neighbourhood presence for independent trades living and working in Crewe, Nantwich or Sandbach.',
       features: [
-        'Standard placement below Verified & Featured pros',
-        'Town & postcode coverage tags (CW1, CW2, CW5, CW11)',
-        'Basic phone number display',
-        'Up to 2 service filter tags',
+        'Free listing in your town & CW postcode area',
+        'Direct phone & WhatsApp link — 0% commission ever',
+        'Neighbour vouch counter & local recommendations',
+        'Service filter tags (No Call-Out Fee, Gas Safe, Free Quotes)',
       ],
-      ctaText: 'Claim Free Basic Profile',
+      ctaText: 'Claim Free Local Listing',
       stripePaymentUrl: '/for-businesses?plan=basic#claim-form',
     },
     {
       id: 'featured',
-      name: 'Verified TOP 3 Pro',
+      name: 'Local Community Supporter',
       priceMonthlyGbp: 29,
-      badgeText: 'Most Popular • Max 3 Per Town',
-      scarcityNote: 'Strictly limited to 3 tradespeople per category in each town (Crewe, Nantwich, Sandbach)',
-      description: 'Lock in a guaranteed Top 3 spot at the very top of your trade category and capture high-intent local calls.',
+      badgeText: 'Helps Keep the Directory Free • Max 3 Per Town',
+      scarcityNote: 'Capped at 3 supporters per trade in each town so local residents always see real independent firms first',
+      description: 'Support our community-run South Cheshire directory while keeping your local trade pinned at the top of your town.',
       features: [
-        'Pinned in the TOP 3 Featured Box for your town & category',
-        'Green "Verified South Cheshire Pro" trust badge',
-        'Direct 1-Click Call & WhatsApp Quote buttons on cards',
-        'All Filter Gap badges unlocked (24/7, Free Quote, No Call-Out Fee)',
-        'DoFollow SEO backlink to your website or Facebook page',
-        'Cancel anytime – 1 job pays for a full year',
+        'Featured at the top of your CW town & trade page',
+        '"Local Community Supporter" badge on your cards',
+        'Direct 1-Click Call & WhatsApp Quote buttons',
+        'All service filter badges unlocked (24/7, Free Quote, No Call-Out Fee)',
+        'Link back to your website or Facebook business page',
+        'No lock-in contract — cancel whenever you wish',
       ],
-      ctaText: 'Lock In Your Top 3 Spot (£29/mo)',
+      ctaText: 'Become a Local Supporter (£29/mo)',
       stripePaymentUrl: '/for-businesses?plan=featured#claim-form',
       popular: true,
     },
     {
       id: 'shopfront',
-      name: 'Digital Shopfront + Lead Priority',
+      name: 'Full Local Page + Direct Enquiries',
       priceMonthlyGbp: 59,
-      badgeText: 'Best For Trades With No Website',
-      scarcityNote: 'Includes instant SMS/Email alerts for "Get 3 Free Quotes" homeowner leads',
-      description: 'Your complete SEO-optimised mini-website on our domain plus priority delivery of homeowner quote requests.',
+      badgeText: 'Ideal If You Only Use Facebook',
+      scarcityNote: 'Includes instant SMS/Email alerts when local CW homeowners ask for quotes',
+      description: 'A dedicated local webpage for your trade across Crewe, Nantwich & Sandbach without needing to build or maintain a website.',
       features: [
-        'Everything in Verified TOP 3 Pro across ALL 3 towns (Crewe, Nantwich & Sandbach)',
-        'Priority routing of "Get 3 Free Quotes" homeowner enquiries',
-        'Full dedicated webpage with photo gallery, price guide & accreditation check',
-        'Custom short link (e.g. southcheshiretrades.co.uk/pro/your-name) for your van & Facebook page',
-        'We write and optimise your profile copy for Google search',
+        'Supporter placement across all 3 CW towns (Crewe, Nantwich & Sandbach)',
+        'Priority local homeowner quote enquiries routed straight to you',
+        'Complete profile page with services, pricing guide & accreditations',
+        'Easy-to-share link for your van & local Facebook replies',
+        'We write and polish your local profile copy for you',
       ],
-      ctaText: 'Upgrade to Shopfront + Leads (£59/mo)',
+      ctaText: 'Set Up Full Local Page (£59/mo)',
       stripePaymentUrl: '/for-businesses?plan=shopfront#claim-form',
     },
   ],
@@ -195,3 +213,13 @@ export const REGION_CONFIG: RegionConfig = {
 export function getTownBySlug(slug: string): TownConfig | undefined {
   return REGION_CONFIG.towns.find((t) => t.slug.toLowerCase() === slug.toLowerCase());
 }
+
+export function getSiteBaseUrl(): string {
+  const raw = String(process.env.NEXT_PUBLIC_SITE_URL || '').trim();
+  if (raw) {
+    const withProtocol = raw.startsWith('http://') || raw.startsWith('https://') ? raw : `https://${raw}`;
+    return withProtocol.replace(/\/+$/, '');
+  }
+  return `https://${REGION_CONFIG.domain}`;
+}
+

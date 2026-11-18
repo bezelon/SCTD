@@ -52,10 +52,19 @@ export default function BusinessClaimPortal() {
           notes,
         }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as {
+        error?: string;
+        claim?: {
+          id: string;
+          businessName: string;
+          selectedPlan: string;
+          monthlyValueGbp: number;
+          status: string;
+        };
+      };
       if (!res.ok) {
         setErrorMsg(data.error || 'Please check all fields and try again.');
-      } else {
+      } else if (data.claim) {
         setSubmittedClaim(data.claim);
       }
     } catch {
@@ -73,10 +82,10 @@ export default function BusinessClaimPortal() {
           <div className="section-header">
             <div>
               <h2 className="section-title">
-                Simple, High-ROI Plans for South Cheshire Trades
+                Fair, Transparent Options for South Cheshire Trades
               </h2>
               <p className="section-subtitle">
-                We strictly cap Featured TOP 3 spots at <strong>3 businesses per trade in each town</strong> (Crewe, Nantwich & Sandbach) so you never get buried under 50 competitors.
+                Every genuine local business gets a free CW listing forever. Supporter placements are capped at <strong>3 trades per category in each town</strong> (Crewe, Nantwich &amp; Sandbach) so neighbours aren&apos;t overwhelmed by spam.
               </p>
             </div>
           </div>

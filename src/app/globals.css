@@ -1,43 +1,50 @@
 :root {
-  /* Curated HSL Palette: British Civic & Trusted Trade Aesthetic */
-  --bg-canvas: hsl(40, 28%, 97%);
-  --bg-surface: hsl(0, 0%, 100%);
-  --bg-subtle: hsl(40, 20%, 93%);
-  --bg-elevated: hsl(38, 25%, 95%);
-  --bg-navy: hsl(212, 42%, 13%);
-  --bg-navy-soft: hsl(212, 36%, 18%);
+  /* Modern Neighbourhood Club Palette — Warm, Neighbourly, Anti-Corporate */
+  --bg-canvas: #FBF9F5;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F3EFE6;
+  --bg-elevated: #F5F1E8;
+  --bg-hero: #F2EDE2;
+  --bg-footer: #233028;
+  --bg-topstrip: #E9EFE8;
+  --bg-community-banner: #FDF6EA;
 
-  --text-primary: hsl(212, 38%, 12%);
-  --text-secondary: hsl(212, 18%, 34%);
-  --text-muted: hsl(212, 12%, 48%);
-  --text-on-dark: hsl(40, 30%, 97%);
-  --text-on-dark-muted: hsl(212, 18%, 76%);
+  /* Compatibility aliases for internal admin/business components */
+  --bg-navy: #233028;
+  --bg-navy-soft: #2D3D33;
 
-  --brand-emerald: hsl(158, 64%, 26%);
-  --brand-emerald-hover: hsl(158, 68%, 21%);
-  --brand-emerald-soft: hsl(154, 48%, 93%);
-  --brand-emerald-text: hsl(158, 72%, 18%);
+  --text-primary: #1F2A23;
+  --text-secondary: #4B574F;
+  --text-muted: #68736C;
+  --text-on-dark: #F7F4EC;
+  --text-on-dark-muted: #CBD5CD;
 
-  --accent-amber: hsl(34, 92%, 42%);
-  --accent-amber-soft: hsl(40, 90%, 92%);
-  --accent-amber-text: hsl(30, 88%, 26%);
+  --brand-emerald: #2B5B44;
+  --brand-emerald-hover: #214835;
+  --brand-emerald-soft: #E4EFE7;
+  --brand-emerald-text: #1E4C36;
 
-  --urgent-crimson: hsl(356, 72%, 42%);
-  --urgent-crimson-soft: hsl(356, 75%, 95%);
+  --accent-amber: #C67D24;
+  --accent-amber-soft: #FDF0DB;
+  --accent-amber-text: #8C520C;
 
-  --border-subtle: hsl(38, 16%, 86%);
-  --border-strong: hsl(212, 18%, 74%);
+  --urgent-crimson: #B43B2E;
+  --urgent-crimson-soft: #FBECE9;
 
-  --shadow-xs: 0 1px 2px rgba(15, 25, 38, 0.05);
-  --shadow-sm: 0 2px 8px rgba(15, 25, 38, 0.06), 0 1px 2px rgba(15, 25, 38, 0.04);
-  --shadow-md: 0 8px 24px rgba(15, 25, 38, 0.08), 0 2px 6px rgba(15, 25, 38, 0.04);
-  --shadow-lg: 0 18px 40px rgba(15, 25, 38, 0.14);
+  --border-subtle: #E5DFD3;
+  --border-strong: #CFC8BA;
+  --border-community: #E8D3AE;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --shadow-xs: 0 1px 2px rgba(31, 42, 35, 0.04);
+  --shadow-sm: 0 2px 10px rgba(31, 42, 35, 0.05), 0 1px 2px rgba(31, 42, 35, 0.03);
+  --shadow-md: 0 8px 24px rgba(31, 42, 35, 0.07), 0 2px 6px rgba(31, 42, 35, 0.04);
+  --shadow-lg: 0 18px 40px rgba(31, 42, 35, 0.14);
 
-  --container-max: 1220px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --container-max: 1200px;
 }
 
 *,
@@ -83,13 +90,13 @@ textarea {
   padding: 0 1.25rem;
 }
 
-/* Top Utility Bar & Navigation */
+/* Top Community Pledge Strip & Navigation */
 .top-notice-bar {
-  background-color: var(--bg-navy);
-  color: var(--text-on-dark-muted);
+  background-color: var(--bg-topstrip);
+  color: var(--brand-emerald-text);
   font-size: 0.82rem;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #D9E4DA;
 }
 
 .top-notice-inner {
@@ -98,6 +105,15 @@ textarea {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.pledge-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background-color: var(--brand-emerald);
+  margin-right: 0.45rem;
 }
 
 .site-header {
@@ -113,7 +129,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 70px;
+  min-height: 72px;
   gap: 1rem;
   flex-wrap: wrap;
   padding-top: 0.5rem;
@@ -127,9 +143,9 @@ textarea {
 }
 
 .brand-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   background-color: var(--brand-emerald);
   color: #fff;
   display: flex;
@@ -143,7 +159,7 @@ textarea {
 
 .brand-title {
   font-weight: 800;
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   letter-spacing: -0.02em;
   color: var(--text-primary);
   display: block;
@@ -153,22 +169,22 @@ textarea {
 .brand-sub {
   font-size: 0.76rem;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 600;
   display: block;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
 .nav-link {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-secondary);
-  padding: 0.35rem 0.5rem;
+  padding: 0.4rem 0.6rem;
   border-radius: var(--radius-sm);
   transition: color 0.15s ease, background-color 0.15s ease;
 }
@@ -181,7 +197,7 @@ textarea {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
 }
 
@@ -190,8 +206,8 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.62rem 1.1rem;
+  gap: 0.45rem;
+  padding: 0.64rem 1.15rem;
   border-radius: var(--radius-sm);
   font-weight: 650;
   font-size: 0.92rem;
@@ -223,7 +239,7 @@ textarea {
 }
 
 .btn-amber:hover {
-  background-color: hsl(32, 92%, 36%);
+  background-color: var(--accent-amber-hover);
 }
 
 .btn-outline {
@@ -237,63 +253,110 @@ textarea {
 }
 
 .btn-ghost-dark {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.22);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
 }
 
 .btn-ghost-dark:hover {
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: var(--bg-subtle);
 }
 
 .btn-sm {
-  padding: 0.45rem 0.8rem;
+  padding: 0.46rem 0.85rem;
   font-size: 0.84rem;
 }
 
 .btn-lg {
-  padding: 0.82rem 1.4rem;
-  font-size: 1rem;
+  padding: 0.82rem 1.35rem;
+  font-size: 0.98rem;
 }
 
-/* Hero Section */
+/* Warm Neighbourhood Hero Section */
 .hero-section {
-  background-color: var(--bg-navy);
-  color: var(--text-on-dark);
-  padding: 3.25rem 0 3rem;
+  background-color: var(--bg-hero);
+  color: var(--text-primary);
+  padding: 3rem 0 2.75rem;
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2.25rem;
   align-items: center;
 }
 
+.hero-grid-single {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
 .hero-eyebrow {
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: hsl(154, 65%, 72%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background-color: var(--brand-emerald-soft);
+  color: var(--brand-emerald-text);
+  font-size: 0.8rem;
   font-weight: 700;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.95rem;
 }
 
 .hero-title {
-  font-size: clamp(1.85rem, 3.4vw, 2.75rem);
+  font-size: clamp(1.85rem, 3.3vw, 2.65rem);
   font-weight: 800;
   letter-spacing: -0.025em;
   line-height: 1.15;
-  margin-bottom: 1rem;
-  color: #fff;
+  margin-bottom: 0.95rem;
+  color: var(--text-primary);
 }
 
 .hero-subtitle {
-  font-size: 1.05rem;
-  color: var(--text-on-dark-muted);
-  max-width: 68ch;
-  margin-bottom: 1.65rem;
+  font-size: 1.03rem;
+  color: var(--text-secondary);
+  max-width: 64ch;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.hero-photo-frame {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 0.6rem;
+  box-shadow: var(--shadow-md);
+}
+
+.hero-photo-img {
+  width: 100%;
+  height: 290px;
+  object-fit: cover;
+  border-radius: calc(var(--radius-lg) - 4px);
+  display: block;
+}
+
+.hero-photo-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 0.45rem 0.25rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.hero-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--border-subtle);
 }
 
 /* Search & Filter Command Bar */
@@ -302,7 +365,7 @@ textarea {
   color: var(--text-primary);
   border-radius: var(--radius-md);
   padding: 1.25rem;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-subtle);
 }
 
@@ -344,10 +407,10 @@ textarea {
 .form-textarea:focus {
   outline: none;
   border-color: var(--brand-emerald);
-  box-shadow: 0 0 0 3px rgba(24, 109, 77, 0.15);
+  box-shadow: 0 0 0 3px rgba(43, 91, 68, 0.14);
 }
 
-/* Filter Gap Bar (Chris Koerner Filter Gap Secret) */
+/* Filter Gap Bar */
 .filter-gap-bar {
   display: flex;
   align-items: center;
@@ -362,8 +425,8 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 0.38rem;
-  padding: 0.38rem 0.75rem;
-  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.78rem;
+  border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 600;
   background-color: var(--bg-subtle);
@@ -386,7 +449,7 @@ textarea {
 
 /* Section Layout */
 .section {
-  padding: 3.25rem 0;
+  padding: 3rem 0;
 }
 
 .section-alt {
@@ -401,11 +464,11 @@ textarea {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.65rem;
 }
 
 .section-title {
-  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-size: clamp(1.35rem, 2.3vw, 1.85rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
@@ -413,28 +476,55 @@ textarea {
 
 .section-subtitle {
   color: var(--text-secondary);
-  font-size: 0.98rem;
+  font-size: 0.96rem;
   max-width: 65ch;
   margin-top: 0.3rem;
 }
 
-/* Town Selector Cards */
+/* Manifesto Pillars */
+.manifesto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.15rem;
+}
+
+.manifesto-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.35rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.manifesto-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--accent-honey-soft, var(--accent-amber-soft));
+  color: var(--accent-amber-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Town Selector Cards with Local Photos */
 .towns-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-  gap: 1.25rem;
+  gap: 1.35rem;
 }
 
 .town-card {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 1.5rem;
+  overflow: hidden;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1rem;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
@@ -444,15 +534,50 @@ textarea {
   border-color: var(--brand-emerald);
 }
 
+.town-card-media {
+  position: relative;
+  height: 175px;
+  width: 100%;
+  background-color: var(--bg-subtle);
+}
+
+.town-card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.town-card-photo-label {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0.7rem;
+  background-color: rgba(31, 42, 35, 0.78);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.town-card-body {
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: 1rem;
+}
+
 .postcode-badge {
   display: inline-block;
-  padding: 0.22rem 0.6rem;
-  border-radius: var(--radius-sm);
-  background-color: var(--bg-navy);
-  color: #fff;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  background-color: var(--brand-emerald-soft);
+  color: var(--brand-emerald-text);
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 .village-pills {
@@ -463,8 +588,8 @@ textarea {
 
 .village-pill {
   font-size: 0.76rem;
-  padding: 0.18rem 0.52rem;
-  border-radius: 4px;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
   background-color: var(--bg-subtle);
   color: var(--text-secondary);
   font-weight: 500;
@@ -499,7 +624,7 @@ textarea {
 .category-icon-box {
   width: 42px;
   height: 42px;
-  border-radius: var(--radius-sm);
+  border-radius: 10px;
   background-color: var(--brand-emerald-soft);
   color: var(--brand-emerald);
   display: flex;
@@ -518,8 +643,8 @@ textarea {
 .town-quick-link {
   font-size: 0.78rem;
   font-weight: 650;
-  padding: 0.25rem 0.55rem;
-  border-radius: 4px;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
   background-color: var(--bg-subtle);
   color: var(--text-primary);
   transition: background-color 0.14s ease, color 0.14s ease;
@@ -530,7 +655,7 @@ textarea {
   color: #fff;
 }
 
-/* Trade Listing Cards (Standard & Featured Top 3) */
+/* Trade Listing Cards (Neighbourly Style — No Scratchcard Vibe) */
 .listings-stack {
   display: flex;
   flex-direction: column;
@@ -541,14 +666,14 @@ textarea {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 1.5rem;
+  padding: 1.45rem;
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .listing-card.featured {
-  background-color: hsl(48, 55%, 99%);
-  border: 2px solid var(--brand-emerald);
+  background-color: var(--bg-surface);
+  border: 1.5px solid #B7CEBE;
   box-shadow: var(--shadow-md);
 }
 
@@ -561,27 +686,48 @@ textarea {
   margin-bottom: 0.75rem;
 }
 
+.pro-identity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.45rem;
+}
+
+.pro-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background-color: var(--brand-emerald);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.92rem;
+  flex-shrink: 0;
+}
+
 .badge-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-bottom: 0.45rem;
+  gap: 0.42rem;
+  margin-bottom: 0.35rem;
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.2rem 0.58rem;
-  border-radius: 4px;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 700;
 }
 
 .badge-featured {
-  background-color: var(--brand-emerald);
-  color: #fff;
+  background-color: var(--accent-amber-soft);
+  color: var(--accent-amber-text);
 }
 
 .badge-verified {
@@ -609,14 +755,14 @@ textarea {
   align-items: center;
   gap: 0.35rem;
   background-color: var(--bg-subtle);
-  padding: 0.35rem 0.7rem;
+  padding: 0.38rem 0.75rem;
   border-radius: var(--radius-sm);
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
 }
 
 .listing-title {
-  font-size: 1.28rem;
+  font-size: 1.24rem;
   font-weight: 800;
   letter-spacing: -0.015em;
   color: var(--text-primary);
@@ -627,23 +773,24 @@ textarea {
 }
 
 .listing-meta {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  margin-top: 0.2rem;
+  margin-top: 0.15rem;
 }
 
 .listing-filter-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.42rem;
-  margin: 0.9rem 0;
+  gap: 0.4rem;
+  margin: 0.85rem 0;
 }
 
 .listing-review-box {
-  background-color: var(--bg-subtle);
-  border-radius: var(--radius-sm);
+  background-color: #F5F7F4;
+  border-left: 3px solid #B7CEBE;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   padding: 0.85rem 1rem;
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   color: var(--text-secondary);
   margin: 0.85rem 0;
 }
@@ -663,15 +810,40 @@ textarea {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.55rem;
+  gap: 0.5rem;
 }
 
-/* Scarcity Open Slot Card (Phase 1 Self-Serve Sales Trigger) */
-.scarcity-slot-banner {
+.vouch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.44rem 0.82rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 700;
   background-color: var(--accent-amber-soft);
-  border: 1px dashed var(--accent-amber);
+  color: var(--accent-amber-text);
+  border: 1px solid var(--border-community);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vouch-btn:hover {
+  background-color: #FBE6C2;
+}
+
+.vouch-btn.vouched {
+  background-color: var(--brand-emerald-soft);
+  color: var(--brand-emerald-text);
+  border-color: var(--brand-emerald);
+}
+
+/* Community Invitation Banner (Replaces Scarcity FOMO Banner) */
+.community-callout-banner {
+  background-color: var(--bg-community-banner);
+  border: 1px solid var(--border-community);
   border-radius: var(--radius-md);
-  padding: 1.15rem 1.35rem;
+  padding: 1.25rem 1.45rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -679,11 +851,11 @@ textarea {
   gap: 1rem;
 }
 
-/* Modal Overlay (Phase 2 Lead Gen "Get 3 Free Quotes") */
+/* Modal Overlay */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(12, 20, 31, 0.68);
+  background-color: rgba(31, 42, 35, 0.62);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -704,7 +876,7 @@ textarea {
   border: 1px solid var(--border-subtle);
 }
 
-/* Pricing Cards (For Businesses Page) */
+/* Pricing Cards (For Businesses Page - Calm & Transparent) */
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -764,7 +936,7 @@ textarea {
 
 /* Footer */
 .site-footer {
-  background-color: var(--bg-navy);
+  background-color: var(--bg-footer);
   color: var(--text-on-dark-muted);
   padding: 3.5rem 0 2.5rem;
   margin-top: 3rem;
@@ -772,7 +944,7 @@ textarea {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 2rem;
   margin-bottom: 2.5rem;
 }
@@ -796,9 +968,18 @@ textarea {
   color: #fff;
 }
 
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-photo-img {
+    height: 230px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-section {
-    padding: 2.25rem 0 2rem;
+    padding: 2rem 0 1.85rem;
   }
   .listing-card {
     padding: 1.15rem;

@@ -2,10 +2,22 @@ import React from 'react';
 import Link from 'next/link';
 import { TradeListing } from '@/lib/listings';
 import { UNIVERSAL_FILTERS, getCategoryBySlug } from '@/config/categories';
+import VouchButton from '@/components/VouchButton';
+import ShareButton from '@/components/ShareButton';
 
 interface ListingCardProps {
   listing: TradeListing;
   currentTownName?: string;
+}
+
+function getInitials(name: string): string {
+  const words = name
+    .replace(/&/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 0 && !w.startsWith('('));
+  if (words.length === 0) return 'CW';
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
 }
 
 export default function ListingCard({ listing, currentTownName }: ListingCardProps) {
@@ -21,8 +33,10 @@ export default function ListingCard({ listing, currentTownName }: ListingCardPro
   }
 
   const whatsappText = encodeURIComponent(
-    `Hi ${listing.name}, I found your profile on South Cheshire Trades (${listing.primaryTownName}) and would like a quote please.`
+    `Hi ${listing.name}, a neighbour recommended you on South Cheshire Locals (${listing.primaryTownName}) — could I ask about a quote please?`
   );
+
+  const initials = getInitials(listing.name);
 
   return (
     <article
@@ -32,36 +46,50 @@ export default function ListingCard({ listing, currentTownName }: ListingCardPro
       <div className="listing-top-row">
         <div>
           <div className="badge-row">
+            {listing.isSamplePreview ? (
+              <span className="badge badge-neutral" title="Sample preview entry while real CW nominations are added">
+                Sample Preview
+              </span>
+            ) : (
+              <span className="badge badge-featured">
+                ✓ Neighbour-Added CW Local
+              </span>
+            )}
             {listing.isFeatured && (
               <span className="badge badge-featured">
-                ★ TOP {listing.featuredRank || 3} Featured Pro in{' '}
-                {currentTownName || listing.primaryTownName}
+                🏡 Local Community Supporter • {currentTownName || listing.primaryTownName}
               </span>
             )}
             {listing.isVerifiedLocal && (
               <span className="badge badge-verified">
-                ✓ Verified South Cheshire Pro
+                ✓ Vouched {listing.outwardPostcode} Neighbour
               </span>
             )}
             <span className="badge badge-neutral">{listing.accreditation}</span>
             {listing.filterIds.includes('emergency-24-7') && (
-              <span className="badge badge-urgent">⚡ 24/7 Emergency Callout</span>
+              <span className="badge badge-urgent">24/7 Local Callout</span>
             )}
           </div>
 
-          <h3 style={{ marginTop: '0.2rem' }}>
-            <Link href={`/pro/${listing.slug}`} className="listing-title">
-              {listing.name}
-            </Link>
-          </h3>
-
-          <div className="listing-meta">
-            <strong>Based in:</strong> {listing.areaLabel} ({listing.outwardPostcode}) •{' '}
-            <strong>Covers:</strong>{' '}
-            {listing.townsServed
-              .map((t) => t.charAt(0).toUpperCase() + t.slice(1))
-              .join(', ')}{' '}
-            • <strong>{listing.yearsInBusiness} yrs</strong> local trade experience
+          <div className="pro-identity-row">
+            <div className="pro-avatar" aria-hidden="true">
+              {initials}
+            </div>
+            <div>
+              <h3>
+                <Link href={`/pro/${listing.slug}`} className="listing-title">
+                  {listing.name}
+                </Link>
+              </h3>
+              <div className="listing-meta">
+                <strong>Based in:</strong> {listing.areaLabel} ({listing.outwardPostcode}) •{' '}
+                <strong>Covers:</strong>{' '}
+                {listing.townsServed
+                  .map((t) => t.charAt(0).toUpperCase() + t.slice(1))
+                  .join(', ')}{' '}
+                • <strong>{listing.yearsInBusiness} yrs</strong> local experience
+              </div>
+            </div>
           </div>
         </div>
 
@@ -70,11 +98,11 @@ export default function ListingCard({ listing, currentTownName }: ListingCardPro
             <span style={{ color: 'var(--accent-amber)' }}>★</span>
             <span>{listing.rating.toFixed(1)}</span>
             <span style={{ color: 'var(--text-muted)', fontWeight: 500, fontSize: '0.8rem' }}>
-              ({listing.reviewCount} local reviews)
+              ({listing.reviewCount} neighbour notes)
             </span>
           </div>
           <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
-            Avg. reply: ~{listing.responseTimeMinutes} mins
+            Typically replies in ~{listing.responseTimeMinutes} mins
           </span>
         </div>
       </div>
@@ -103,7 +131,7 @@ export default function ListingCard({ listing, currentTownName }: ListingCardPro
           marginBottom: '0.75rem',
         }}
       >
-        <strong style={{ color: 'var(--text-primary)' }}>Specialisms:</strong>
+        <strong style={{ color: 'var(--text-primary)' }}>How they help:</strong>
         {listing.services.map((srv, idx) => (
           <span key={srv}>
             {srv}
@@ -112,7 +140,7 @@ export default function ListingCard({ listing, currentTownName }: ListingCardPro
         ))}
       </div>
 
-      {/* Featured Local Homeowner Review */}
+      {/* Neighbour Endorsement Quote */}
       <div className="listing-review-box">
         <div style={{ fontStyle: 'italic', marginBottom: '0.25rem' }}>
           “{listing.featuredReview.text}”
@@ -128,7 +156,7 @@ export default function ListingCard({ listing, currentTownName }: ListingCardPro
       <div className="listing-footer">
         <div>
           <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            Typical Pricing Guide:
+            Honest Local Guide:
           </div>
           <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
             {listing.priceGuide}
@@ -136,61 +164,56 @@ export default function ListingCard({ listing, currentTownName }: ListingCardPro
         </div>
 
         <div className="listing-actions">
-          <a
-            href={`tel:${listing.phone.replace(/\s+/g, '')}`}
-            className="btn btn-primary btn-sm"
-            id={`call-btn-${listing.slug}`}
-          >
-            📞 Call {listing.phone}
-          </a>
-          <a
-            href={`https://wa.me/${listing.whatsappNumber}?text=${whatsappText}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-outline btn-sm"
-            id={`whatsapp-btn-${listing.slug}`}
-          >
-            💬 WhatsApp Quote
-          </a>
+          <VouchButton
+            slug={listing.slug}
+            businessName={listing.name}
+            baseVouchCount={listing.reviewCount}
+            compact
+          />
+          <ShareButton
+            path={`/pro/${listing.slug}`}
+            label={listing.name}
+            townName={listing.primaryTownName}
+          />
+          {listing.phone && !listing.phone.toLowerCase().includes('facebook') ? (
+            <a
+              href={`tel:${listing.phone.replace(/\s+/g, '')}`}
+              className="btn btn-primary btn-sm"
+              id={`call-btn-${listing.slug}`}
+            >
+              📞 Call {listing.phone}
+            </a>
+          ) : listing.facebookUrl ? (
+            <a
+              href={listing.facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary btn-sm"
+              id={`fb-btn-${listing.slug}`}
+            >
+              👍 Facebook Page
+            </a>
+          ) : null}
+          {listing.whatsappNumber && (
+            <a
+              href={`https://wa.me/${listing.whatsappNumber}?text=${whatsappText}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline btn-sm"
+              id={`whatsapp-btn-${listing.slug}`}
+            >
+              💬 WhatsApp
+            </a>
+          )}
           <Link
             href={`/pro/${listing.slug}`}
             className="btn btn-outline btn-sm"
             id={`profile-btn-${listing.slug}`}
           >
-            View Full Profile →
+            Full Profile →
           </Link>
         </div>
       </div>
-
-      {!listing.isClaimed && (
-        <div
-          style={{
-            marginTop: '0.8rem',
-            paddingTop: '0.65rem',
-            borderTop: '1px dashed var(--border-subtle)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-            fontSize: '0.79rem',
-            color: 'var(--text-muted)',
-          }}
-        >
-          <span>
-            Unclaimed Local Listing •{' '}
-            {listing.noWebsiteOpportunity
-              ? 'No dedicated website linked yet (Facebook only)'
-              : 'Standard placement'}
-          </span>
-          <Link
-            href={`/for-businesses?claim=${listing.slug}&town=${listing.primaryTownSlug}&category=${listing.categorySlug}#claim-form`}
-            style={{ color: 'var(--brand-emerald)', fontWeight: 700 }}
-          >
-            Own {listing.name}? Claim or Upgrade to Top 3 (£29/mo) →
-          </Link>
-        </div>
-      )}
     </article>
   );
 }

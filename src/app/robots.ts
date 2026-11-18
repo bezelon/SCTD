@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { REGION_CONFIG } from '@/config/region';
+import { getSiteBaseUrl } from '@/config/region';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin', '/api/'],
     },
-    sitemap: `https://${REGION_CONFIG.domain}/sitemap.xml`,
+    sitemap: `${getSiteBaseUrl()}/sitemap.xml`,
   };
 }

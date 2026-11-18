@@ -1,11 +1,13 @@
 import type { MetadataRoute } from 'next';
-import { REGION_CONFIG } from '@/config/region';
+import { REGION_CONFIG, getSiteBaseUrl } from '@/config/region';
 import { CATEGORIES } from '@/config/categories';
-import { getAllListings } from '@/lib/listings';
+import { getLiveListings } from '@/lib/listings';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = `https://${REGION_CONFIG.domain}`;
-  const now = '2026-11-11';
+export const dynamic = 'force-dynamic';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = getSiteBaseUrl();
+  const now = new Date().toISOString().slice(0, 10);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
@@ -41,7 +43,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  const proRoutes: MetadataRoute.Sitemap = getAllListings().map((listing) => ({
+  const liveListings = await getLiveListings();
+  const proRoutes: MetadataRoute.Sitemap = liveListings.map((listing) => ({
     url: `${baseUrl}/pro/${listing.slug}`,
     lastModified: now,
     changeFrequency: 'monthly',

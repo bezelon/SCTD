@@ -1,44 +1,21 @@
 import { NextResponse } from 'next/server';
-import fs from 'node:fs';
-import path from 'node:path';
-import initialClaims from '@/data/claims.json';
+import { BusinessClaim, createClaim, listClaims } from '@/lib/db';
+import { checkAdminAuthorized } from '@/lib/auth';
 
-export interface BusinessClaim {
-  id: string;
-  createdAt: string;
-  businessName: string;
-  contactName: string;
-  phone: string;
-  email: string;
-  townSlug: string;
-  categorySlug: string;
-  selectedPlan: 'basic' | 'featured' | 'shopfront';
-  monthlyValueGbp: number;
-  status: string;
-  notes: string;
-}
+export type { BusinessClaim };
 
-const memoryClaims: BusinessClaim[] = [...(initialClaims as BusinessClaim[])];
-
-function loadClaims(): BusinessClaim[] {
-  try {
-    const filePath = path.join(process.cwd(), 'src/data/claims.json');
-    if (fs.existsSync(filePath)) {
-      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    }
-  } catch {
-    // Fallback to in-memory store
+export async function GET(request: Request) {
+  const auth = await checkAdminAuthorized(request);
+  if (!auth.authorized) {
+    return NextResponse.json({ error: 'Steward authentication required.' }, { status: 401 });
   }
-  return memoryClaims;
-}
-
-export async function GET() {
-  return NextResponse.json({ claims: loadClaims() });
+  const claims = await listClaims();
+  return NextResponse.json({ claims });
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as Record<string, unknown>;
     const {
       businessName,
       contactName,
@@ -66,30 +43,21 @@ export async function POST(request: Request) {
         : 'Free Profile Claim Submitted';
 
     const newClaim: BusinessClaim = {
-      id: `claim-${Date.now().toString().slice(-5)}`,
+      id: `claim-${Date.now().toString().slice(-6)}`,
       createdAt: new Date().toISOString(),
       businessName: String(businessName).trim(),
       contactName: String(contactName).trim(),
       phone: String(phone).trim(),
       email: String(email).trim(),
-      townSlug,
-      categorySlug,
-      selectedPlan,
+      townSlug: String(townSlug),
+      categorySlug: String(categorySlug),
+      selectedPlan: selectedPlan as BusinessClaim['selectedPlan'],
       monthlyValueGbp,
       status,
       notes: String(notes).trim(),
     };
 
-    memoryClaims.unshift(newClaim);
-
-    try {
-      const filePath = path.join(process.cwd(), 'src/data/claims.json');
-      const existing = loadClaims();
-      const updated = [newClaim, ...existing.filter((c) => c.id !== newClaim.id)];
-      fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), 'utf8');
-    } catch {
-      // Ignore read-only filesystem on serverless deployment
-    }
+    await createClaim(newClaim);
 
     return NextResponse.json({
       success: true,

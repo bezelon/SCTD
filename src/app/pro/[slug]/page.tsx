@@ -1,14 +1,20 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import {
   getAllListings,
-  getListingBySlug,
-  getListingsByTownAndCategory,
+  getLiveListingBySlug,
+  getLiveListingsByTownAndCategory,
 } from '@/lib/listings';
+import { getTownBySlug } from '@/config/region';
 import { getCategoryBySlug, UNIVERSAL_FILTERS } from '@/config/categories';
 import QuoteModal from '@/components/QuoteModal';
+import VouchButton from '@/components/VouchButton';
+import ShareButton from '@/components/ShareButton';
+
+export const dynamic = 'force-dynamic';
 
 interface ProProfilePageProps {
   params: Promise<{ slug: string }>;
@@ -24,38 +30,40 @@ export async function generateMetadata({
   params,
 }: ProProfilePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
+  const listing = await getLiveListingBySlug(slug);
   if (!listing) return {};
 
   return {
     title: `${listing.name} – ${listing.categoryName} in ${listing.primaryTownName} (${listing.outwardPostcode})`,
-    description: `${listing.shortSummary} Call ${listing.phone} or request a free quote online. Rated ${listing.rating}/5 from ${listing.reviewCount} local reviews.`,
+    description: `${listing.shortSummary} Call ${listing.phone} directly. Neighbour rating ${listing.rating}/5 from ${listing.reviewCount} local recommendations.`,
   };
 }
 
 export default async function ProProfilePage({ params }: ProProfilePageProps) {
   const { slug } = await params;
-  const listing = getListingBySlug(slug);
+  const listing = await getLiveListingBySlug(slug);
   if (!listing) {
     notFound();
   }
 
   const category = getCategoryBySlug(listing.categorySlug);
+  const townConfig = getTownBySlug(listing.primaryTownSlug);
   const allFilterDefs = [...(category?.filterTags || []), ...UNIVERSAL_FILTERS];
 
   function getFilterLabel(fid: string) {
     return allFilterDefs.find((f) => f.id === fid)?.label || fid;
   }
 
-  const similarPros = getListingsByTownAndCategory(
+  const { listings: townCatListings } = await getLiveListingsByTownAndCategory(
     listing.primaryTownSlug,
     listing.categorySlug
-  )
+  );
+  const similarPros = townCatListings
     .filter((l) => l.id !== listing.id)
     .slice(0, 3);
 
   const whatsappText = encodeURIComponent(
-    `Hi ${listing.name}, I saw your profile on South Cheshire Trades (${listing.primaryTownName}) and would like a quote please.`
+    `Hi ${listing.name}, a neighbour recommended you on South Cheshire Locals (${listing.primaryTownName}) and I'd love to ask about a quote please.`
   );
 
   const jsonLd = {
@@ -89,7 +97,7 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
         <div className="container">
           <div className="hero-eyebrow">
             <Link href="/" style={{ textDecoration: 'underline' }}>
-              South Cheshire
+              CW1–CW11 Locals
             </Link>{' '}
             /{' '}
             <Link
@@ -108,18 +116,23 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
           </div>
 
           <div className="badge-row" style={{ marginBottom: '0.75rem' }}>
+            {listing.isSamplePreview ? (
+              <span className="badge badge-neutral">Sample Preview Profile</span>
+            ) : (
+              <span className="badge badge-featured">✓ Neighbour-Added CW Local</span>
+            )}
             {listing.isFeatured && (
               <span className="badge badge-featured">
-                ★ TOP {listing.featuredRank || 3} Featured Pro in {listing.primaryTownName}
+                🏡 Local Community Supporter • {listing.primaryTownName}
               </span>
             )}
             {listing.isVerifiedLocal && (
               <span className="badge badge-verified">
-                ✓ Verified South Cheshire Pro
+                ✓ Vouched {listing.outwardPostcode} Neighbour
               </span>
             )}
-            <span className="badge badge-amber">
-              ★ {listing.rating.toFixed(1)} ({listing.reviewCount} Local Reviews)
+            <span className="badge badge-neutral">
+              ★ {listing.rating.toFixed(1)} ({listing.reviewCount} neighbour notes)
             </span>
           </div>
 
@@ -127,28 +140,52 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
           <p className="hero-subtitle">{listing.shortSummary}</p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-            <a
-              href={`tel:${listing.phone.replace(/\s+/g, '')}`}
-              className="btn btn-primary btn-lg"
-              id="pro-profile-call-btn"
-            >
-              📞 Call Direct: {listing.phone}
-            </a>
-            <a
-              href={`https://wa.me/${listing.whatsappNumber}?text=${whatsappText}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost-dark btn-lg"
-              id="pro-profile-whatsapp-btn"
-            >
-              💬 Message on WhatsApp
-            </a>
+            {listing.phone && !listing.phone.toLowerCase().includes('facebook') ? (
+              <a
+                href={`tel:${listing.phone.replace(/\s+/g, '')}`}
+                className="btn btn-primary btn-lg"
+                id="pro-profile-call-btn"
+              >
+                📞 Call Direct: {listing.phone}
+              </a>
+            ) : listing.facebookUrl ? (
+              <a
+                href={listing.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-lg"
+                id="pro-profile-fb-btn"
+              >
+                👍 Message via Facebook Page
+              </a>
+            ) : null}
+            {listing.whatsappNumber && (
+              <a
+                href={`https://wa.me/${listing.whatsappNumber}?text=${whatsappText}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-lg"
+                id="pro-profile-whatsapp-btn"
+              >
+                💬 Message on WhatsApp
+              </a>
+            )}
             <QuoteModal
               defaultTownSlug={listing.primaryTownSlug}
               defaultCategorySlug={listing.categorySlug}
-              buttonLabel="Request Written Quote"
-              buttonClassName="btn btn-ghost-dark btn-lg"
+              buttonLabel="Ask for Written Quote"
+              buttonClassName="btn btn-outline btn-lg"
               triggerId="pro-profile-quote-btn"
+            />
+            <VouchButton
+              slug={listing.slug}
+              businessName={listing.name}
+              baseVouchCount={listing.reviewCount}
+            />
+            <ShareButton
+              path={`/pro/${listing.slug}`}
+              label={listing.name}
+              townName={listing.primaryTownName}
             />
           </div>
         </div>
@@ -164,11 +201,11 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
               alignItems: 'start',
             }}
           >
-            {/* Left Column: Details, Filters & Reviews */}
+            {/* Left Column: Details, Filters & Neighbour Note */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div className="listing-card">
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.85rem' }}>
-                  Verified Credentials & Service Filters
+                  Credentials &amp; Neighbour Filters
                 </h2>
                 <div className="listing-filter-pills">
                   {listing.filterIds.map((fid) => (
@@ -209,7 +246,7 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
                   </div>
                   <div>
                     <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', fontWeight: 700 }}>
-                      TYPICAL PRICING GUIDE
+                      HONEST PRICING GUIDE
                     </div>
                     <div style={{ fontWeight: 700 }}>{listing.priceGuide}</div>
                   </div>
@@ -218,7 +255,7 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
 
               <div className="listing-card">
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.85rem' }}>
-                  Services Offered in {listing.primaryTownName} ({listing.outwardPostcode})
+                  How They Help in {listing.primaryTownName} ({listing.outwardPostcode})
                 </h2>
                 <ul
                   style={{
@@ -247,7 +284,7 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
 
               <div className="listing-card">
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.85rem' }}>
-                  Featured Local Homeowner Review
+                  Local Neighbour Endorsement
                 </h2>
                 <div className="listing-review-box" style={{ margin: 0 }}>
                   <p style={{ fontSize: '0.96rem', fontStyle: 'italic', marginBottom: '0.5rem' }}>
@@ -263,11 +300,11 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
               </div>
             </div>
 
-            {/* Right Column: Contact Card + Self-Serve Claim Trigger */}
+            {/* Right Column: Contact Card + Local Town Context */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div className="listing-card">
                 <h2 style={{ fontSize: '1.15rem', fontWeight: 800, marginBottom: '0.75rem' }}>
-                  Direct Local Contact Details
+                  Direct Local Contact (0% Middleman Fee)
                 </h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.9rem' }}>
                   <div>
@@ -298,11 +335,11 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
                         rel="noopener noreferrer"
                         style={{ color: 'var(--brand-emerald)', textDecoration: 'underline' }}
                       >
-                        Visit Official Website ↗
+                        Visit Website ↗
                       </a>
                     ) : (
-                      <span style={{ color: 'var(--accent-amber-text)', fontWeight: 600 }}>
-                        Facebook / Local Directory Profile Only
+                      <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>
+                        Word-of-mouth &amp; Facebook local trade
                       </span>
                     )}
                   </div>
@@ -323,42 +360,52 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
                     className="btn btn-outline"
                     style={{ width: '100%' }}
                   >
-                    💬 Send WhatsApp Message
+                    💬 Message on WhatsApp
                   </a>
                 </div>
               </div>
 
-              {/* Phase 1 Self-Serve Claim Box */}
+              {townConfig && (
+                <div className="town-card">
+                  <div className="town-card-media" style={{ height: '145px' }}>
+                    <Image
+                      src={townConfig.imageUrl}
+                      alt={townConfig.imageAlt}
+                      width={600}
+                      height={360}
+                      className="town-card-photo"
+                    />
+                    <span className="town-card-photo-label">📍 {townConfig.imageCaption}</span>
+                  </div>
+                  <div className="town-card-body" style={{ padding: '1rem' }}>
+                    <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+                      Serving households across <strong>{townConfig.name}</strong> and nearby villages ({townConfig.nearbyVillages.slice(0, 4).join(', ')}).
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Calm, discreet owner details update card (no £29/mo pitch) */}
               <div
                 style={{
-                  backgroundColor: 'var(--accent-amber-soft)',
-                  border: '1px solid var(--accent-amber)',
+                  backgroundColor: 'var(--bg-subtle)',
+                  border: '1px solid var(--border-subtle)',
                   borderRadius: 'var(--radius-md)',
-                  padding: '1.35rem',
+                  padding: '1.2rem',
                 }}
               >
-                <span className="badge badge-amber" style={{ marginBottom: '0.45rem' }}>
-                  {listing.isClaimed ? 'Verified Owner Profile' : 'Unclaimed Business Profile'}
-                </span>
-                <h3 style={{ fontSize: '1.08rem', fontWeight: 800, marginBottom: '0.4rem' }}>
-                  Are you the owner of {listing.name}?
-                </h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.9rem' }}>
-                  {listing.noWebsiteOpportunity
-                    ? 'We noticed you primarily use Facebook rather than a dedicated website. Upgrade this profile into your full Digital Shopfront + lock in a Top 3 Featured spot in ' +
-                      listing.primaryTownName +
-                      ' for £29–£59/mo.'
-                    : 'Claim this profile to update your services, add photos, or lock in a Top 3 Featured spot in ' +
-                      listing.primaryTownName +
-                      ' (£29/mo).'}
+                <div style={{ fontSize: '0.92rem', fontWeight: 700, marginBottom: '0.35rem' }}>
+                  Is {listing.name} your family trade?
+                </div>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.8rem' }}>
+                  Basic community listings are always £0. Let us know if you need to update your phone number, hours, or areas covered.
                 </p>
                 <Link
                   href={`/for-businesses?claim=${listing.slug}&businessName=${encodeURIComponent(listing.name)}&town=${listing.primaryTownSlug}&category=${listing.categorySlug}#claim-form`}
-                  className="btn btn-amber"
-                  style={{ width: '100%' }}
+                  className="btn btn-outline btn-sm"
                   id="pro-profile-claim-btn"
                 >
-                  Claim or Upgrade This Profile →
+                  Update or Verify Details →
                 </Link>
               </div>
             </div>
@@ -368,24 +415,24 @@ export default async function ProProfilePage({ params }: ProProfilePageProps) {
           {similarPros.length > 0 && (
             <div style={{ marginTop: '3rem' }}>
               <h2 className="section-title" style={{ fontSize: '1.35rem', marginBottom: '1rem' }}>
-                Other Verified {listing.categoryName} in {listing.primaryTownName}
+                Other Local {listing.categoryName} in {listing.primaryTownName}
               </h2>
               <div className="towns-grid">
                 {similarPros.map((sim) => (
-                  <div key={sim.id} className="town-card">
+                  <div key={sim.id} className="listing-card">
                     <div>
                       <span className="badge badge-verified" style={{ marginBottom: '0.4rem' }}>
-                        ★ {sim.rating} ({sim.reviewCount} reviews)
+                        ★ {sim.rating} ({sim.reviewCount} neighbour notes)
                       </span>
                       <h3 style={{ fontSize: '1.1rem', fontWeight: 800 }}>
                         <Link href={`/pro/${sim.slug}`}>{sim.name}</Link>
                       </h3>
-                      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: '0.35rem 0 0.9rem' }}>
                         {sim.areaLabel} ({sim.outwardPostcode}) • {sim.priceGuide}
                       </p>
                     </div>
                     <Link href={`/pro/${sim.slug}`} className="btn btn-outline btn-sm">
-                      View Profile & Phone →
+                      View Profile &amp; Phone →
                     </Link>
                   </div>
                 ))}

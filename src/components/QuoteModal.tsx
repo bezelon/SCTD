@@ -22,7 +22,7 @@ interface QuoteModalProps {
 export default function QuoteModal({
   defaultTownSlug = 'crewe',
   defaultCategorySlug = 'plumbers',
-  buttonLabel = 'Get 3 Free Local Quotes',
+  buttonLabel = 'Ask 3 Neighbour Pros',
   buttonClassName = 'btn btn-primary',
   triggerId = 'open-quote-modal-btn',
 }: QuoteModalProps) {
@@ -57,7 +57,15 @@ export default function QuoteModal({
           jobDescription,
         }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as {
+        error?: string;
+        matchedPros?: Array<{
+          name: string;
+          phone: string;
+          slug: string;
+          responseTimeMinutes: number;
+        }>;
+      };
       if (!res.ok) {
         setErrorMsg(data.error || 'Please check your details and try again.');
       } else {
@@ -109,15 +117,15 @@ export default function QuoteModal({
             >
               <div>
                 <span className="badge badge-verified" style={{ marginBottom: '0.4rem' }}>
-                  100% Free Homeowner Service • CW1–CW11
+                  100% Free for CW1–CW11 Households • Zero Broker Markups
                 </span>
                 <h2
                   id="quote-modal-title"
-                  style={{ fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.2 }}
+                  style={{ fontSize: '1.32rem', fontWeight: 800, lineHeight: 1.2 }}
                 >
                   {matchedPros
-                    ? 'Your Request Has Been Sent to Local Pros!'
-                    : 'Get Up to 3 Free Local Quotes'}
+                    ? 'Passed Straight to Local Trades!'
+                    : 'Ask Up to 3 Local Neighbours for an Honest Quote'}
                 </h2>
               </div>
               <button
@@ -134,8 +142,8 @@ export default function QuoteModal({
             {matchedPros ? (
               <div>
                 <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.94rem' }}>
-                  We have routed your job details to the top verified specialists covering{' '}
-                  <strong>{postcode.toUpperCase()}</strong>. They will call or WhatsApp you directly — or you can ring them right now:
+                  Your note has been matched with independent local specialists covering{' '}
+                  <strong>{postcode.toUpperCase()}</strong>. They keep 100% of the job — or you can ring them directly right now:
                 </p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
@@ -155,12 +163,12 @@ export default function QuoteModal({
                       }}
                     >
                       <div>
-                        <span className="badge badge-featured" style={{ marginBottom: '0.25rem' }}>
-                          #{idx + 1} Matched Local Pro
+                        <span className="badge badge-verified" style={{ marginBottom: '0.25rem' }}>
+                          Local Match #{idx + 1}
                         </span>
                         <div style={{ fontWeight: 700, fontSize: '1rem' }}>{pro.name}</div>
                         <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                          Avg. response time: ~{pro.responseTimeMinutes} mins
+                          Usually replies in ~{pro.responseTimeMinutes} mins
                         </div>
                       </div>
                       <a
@@ -180,13 +188,13 @@ export default function QuoteModal({
                   style={{ width: '100%' }}
                   onClick={resetAndClose}
                 >
-                  Done & Return to Directory
+                  Done &amp; Return to Directory
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                  Tell us what you need in <strong>Crewe, Nantwich or Sandbach</strong>. Up to 3 vetted local tradespeople will reply with a no-obligation quote.
+                  Tell us what needs sorting in <strong>Crewe, Nantwich or Sandbach</strong>. Up to 3 genuine local tradespeople will reply directly — never sold to call centres.
                 </p>
 
                 {errorMsg && (
@@ -330,11 +338,11 @@ export default function QuoteModal({
                   disabled={submitting}
                   style={{ width: '100%', marginTop: '0.25rem' }}
                 >
-                  {submitting ? 'Matching Local Pros...' : 'Request Up to 3 Free Local Quotes →'}
+                  {submitting ? 'Matching CW Neighbours...' : 'Send to Up to 3 Local Trades →'}
                 </button>
 
                 <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-                  Zero commission or middleman fees. Your details are only shared with up to 3 vetted local tradespeople.
+                  We never take commission from local tradespeople. Your details stay inside South Cheshire.
                 </p>
               </form>
             )}

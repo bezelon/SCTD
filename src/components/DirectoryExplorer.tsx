@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import Link from 'next/link';
 import { TradeListing } from '@/lib/listings';
 import { REGION_CONFIG } from '@/config/region';
 import { CATEGORIES, UNIVERSAL_FILTERS, FilterTag } from '@/config/categories';
 import ListingCard from '@/components/ListingCard';
 import QuoteModal from '@/components/QuoteModal';
+import NominateModal from '@/components/NominateModal';
 
 interface DirectoryExplorerProps {
   initialListings: TradeListing[];
@@ -25,7 +25,6 @@ export default function DirectoryExplorer({
   lockedTownSlug,
   lockedCategorySlug,
   availableFilters = UNIVERSAL_FILTERS,
-  scarcityStatus,
 }: DirectoryExplorerProps) {
   const [selectedTown, setSelectedTown] = useState<string>(lockedTownSlug || 'all');
   const [selectedCategory, setSelectedCategory] = useState<string>(
@@ -107,7 +106,7 @@ export default function DirectoryExplorer({
           {!lockedTownSlug && (
             <div className="form-field">
               <label htmlFor="explorer-town-select" className="form-label">
-                Town / Postcode Area
+                Town / CW Postcode Area
               </label>
               <select
                 id="explorer-town-select"
@@ -115,7 +114,7 @@ export default function DirectoryExplorer({
                 value={selectedTown}
                 onChange={(e) => setSelectedTown(e.target.value)}
               >
-                <option value="all">All South Cheshire (Crewe, Nantwich, Sandbach)</option>
+                <option value="all">All CW1–CW11 (Crewe, Nantwich, Sandbach)</option>
                 {REGION_CONFIG.towns.map((t) => (
                   <option key={t.slug} value={t.slug}>
                     {t.name} ({t.postcodes.join(', ')})
@@ -128,7 +127,7 @@ export default function DirectoryExplorer({
           {!lockedCategorySlug && (
             <div className="form-field">
               <label htmlFor="explorer-category-select" className="form-label">
-                Trade Category
+                Trade / Skill Needed
               </label>
               <select
                 id="explorer-category-select"
@@ -136,7 +135,7 @@ export default function DirectoryExplorer({
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                <option value="all">All 10 Home & Trade Categories</option>
+                <option value="all">All 10 Local Trade Categories</option>
                 {CATEGORIES.map((c) => (
                   <option key={c.slug} value={c.slug}>
                     {c.name}
@@ -148,7 +147,7 @@ export default function DirectoryExplorer({
 
           <div className="form-field">
             <label htmlFor="explorer-keyword-input" className="form-label">
-              Search Service, Village or Postcode
+              Search Name, Village or Postcode
             </label>
             <input
               id="explorer-keyword-input"
@@ -161,7 +160,7 @@ export default function DirectoryExplorer({
           </div>
         </div>
 
-        {/* Chris Koerner's Filter Gap Secret Bar */}
+        {/* Neighbour Filter Bar */}
         <div className="filter-gap-bar">
           <span
             style={{
@@ -173,7 +172,7 @@ export default function DirectoryExplorer({
               marginRight: '0.25rem',
             }}
           >
-            Instant Filters:
+            Filter by what matters:
           </span>
 
           {availableFilters.map((filter) => {
@@ -200,7 +199,7 @@ export default function DirectoryExplorer({
             onClick={() => setOnlyVerified((v) => !v)}
           >
             <span>{onlyVerified ? '✓' : '+'}</span>
-            <span>Verified Pros Only</span>
+            <span>Neighbour-Vouched Only</span>
           </button>
 
           {(activeFilters.length > 0 ||
@@ -227,7 +226,7 @@ export default function DirectoryExplorer({
         </div>
       </div>
 
-      {/* Results Header & Lead Gen CTA */}
+      {/* Results Header & Direct Local Enquiry */}
       <div
         style={{
           display: 'flex',
@@ -240,48 +239,25 @@ export default function DirectoryExplorer({
       >
         <div style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
           Showing <strong style={{ color: 'var(--text-primary)' }}>{filteredListings.length}</strong>{' '}
-          local tradespeople
-          {currentTownObj ? ` covering ${currentTownObj.name} (${currentTownObj.postcodes.join('/')})` : ''}
+          independent local trades
+          {currentTownObj ? ` serving ${currentTownObj.name} (${currentTownObj.postcodes.join('/')})` : ''}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-            Short on time? Let 3 vetted pros reply to you:
+            Short on time? Ask 3 local pros directly:
           </span>
           <QuoteModal
             defaultTownSlug={lockedTownSlug || (selectedTown !== 'all' ? selectedTown : 'crewe')}
             defaultCategorySlug={
               lockedCategorySlug || (selectedCategory !== 'all' ? selectedCategory : 'plumbers')
             }
-            buttonLabel="Request 3 Free Quotes"
+            buttonLabel="Ask 3 Neighbour Pros"
             buttonClassName="btn btn-primary btn-sm"
             triggerId="explorer-quote-modal-btn"
           />
         </div>
       </div>
-
-      {/* Scarcity Banner (Phase 1 Self-Serve Monetization Trigger) */}
-      {scarcityStatus && scarcityStatus.remaining > 0 && (
-        <div className="scarcity-slot-banner" style={{ marginBottom: '1.25rem' }}>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '0.96rem', color: 'var(--accent-amber-text)' }}>
-              🔥 {scarcityStatus.taken} of {scarcityStatus.maxSlots} TOP Featured Pro Spots Taken in{' '}
-              {currentTownObj?.name || 'This Area'} — Only {scarcityStatus.remaining} Spot Left!
-            </div>
-            <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginTop: '0.15rem' }}>
-              Are you a local {currentCatObj?.singularName.toLowerCase() || 'tradesperson'} in{' '}
-              {currentTownObj?.name || 'South Cheshire'}? Pin your business in the Top 3 above competitors for £29/mo (1 job pays for the year).
-            </div>
-          </div>
-          <Link
-            href={`/for-businesses?plan=featured&town=${lockedTownSlug || 'crewe'}&category=${lockedCategorySlug || 'plumbers'}#claim-form`}
-            className="btn btn-amber btn-sm"
-            id="scarcity-claim-top3-btn"
-          >
-            Claim Last Top-3 Spot (£29/mo) →
-          </Link>
-        </div>
-      )}
 
       {/* Listings Feed */}
       {filteredListings.length === 0 ? (
@@ -295,22 +271,38 @@ export default function DirectoryExplorer({
           }}
         >
           <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-            No exact match for all selected filters
+            {initialListings.length === 0
+              ? 'Be the first neighbour to add a local trade here'
+              : 'No exact match for all selected filters'}
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1.25rem' }}>
-            Try removing one of the filter tags above or request 3 free quotes and we will match you manually.
+            {initialListings.length === 0
+              ? 'We only list genuine CW1–CW11 trades recommended by locals. Know someone reliable? Add them in 30 seconds for £0.'
+              : 'Try removing one of the filter pills above or ask 3 local neighbours directly.'}
           </p>
-          <button
-            type="button"
-            className="btn btn-outline btn-sm"
-            onClick={() => {
-              setActiveFilters([]);
-              setOnlyVerified(false);
-              setSearchQuery('');
-            }}
-          >
-            Clear Active Filters
-          </button>
+          {initialListings.length === 0 ? (
+            <NominateModal
+              defaultTownSlug={lockedTownSlug || (selectedTown !== 'all' ? selectedTown : 'crewe')}
+              defaultCategorySlug={
+                lockedCategorySlug || (selectedCategory !== 'all' ? selectedCategory : 'plumbers')
+              }
+              buttonLabel="+ Nominate First Local Trade (£0)"
+              buttonClassName="btn btn-primary btn-sm"
+              triggerId="empty-state-nominate-btn"
+            />
+          ) : (
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              onClick={() => {
+                setActiveFilters([]);
+                setOnlyVerified(false);
+                setSearchQuery('');
+              }}
+            >
+              Clear Active Filters
+            </button>
+          )}
         </div>
       ) : (
         <div className="listings-stack">
@@ -323,6 +315,28 @@ export default function DirectoryExplorer({
           ))}
         </div>
       )}
+
+      {/* Community Nomination Callout (Replaces Scarcity FOMO Banner) */}
+      <div className="community-callout-banner" style={{ marginTop: '1.5rem' }}>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: '0.98rem', color: 'var(--text-primary)' }}>
+            Know a reliable {currentCatObj?.singularName.toLowerCase() || 'tradesperson'} in{' '}
+            {currentTownObj?.name || 'Crewe, Nantwich or Sandbach'} who isn&apos;t listed here yet?
+          </div>
+          <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+            Add your mate, brother, or family-run local firm in 30 seconds (£0 forever) so neighbours never have to rely on Google or national call centres.
+          </div>
+        </div>
+        <NominateModal
+          defaultTownSlug={lockedTownSlug || (selectedTown !== 'all' ? selectedTown : 'crewe')}
+          defaultCategorySlug={
+            lockedCategorySlug || (selectedCategory !== 'all' ? selectedCategory : 'plumbers')
+          }
+          buttonLabel="+ Nominate a Local Trade (£0)"
+          buttonClassName="btn btn-amber btn-sm"
+          triggerId="explorer-nominate-btn"
+        />
+      </div>
     </div>
   );
 }
