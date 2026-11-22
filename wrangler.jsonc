@@ -23,6 +23,7 @@
     }
   ],
   "vars": {
-    "NEXT_PUBLIC_DEMO_MODE": "true"
+    "NEXT_PUBLIC_DEMO_MODE": "true",
+    "NEXT_PUBLIC_SITE_URL": "sctd.bezelon.workers.dev"
   }
 }
